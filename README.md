@@ -1,6 +1,6 @@
 # :zap:Java NIO
  
-* Java coding project for a Java Programming Masterclass Ch. 14 - see [:clap: Inspiration](#clap-inspiration) below
+* Java coding project for a Java Programming Masterclass see [:clap: Inspiration](#clap-inspiration) below
 
 *** Note: to open web links in a new window use: _ctrl+click on link_**
 
@@ -22,6 +22,7 @@
 
 * [Java.nio](https://docs.oracle.com/javase/8/docs/api/java/nio/package-summary.html) used to define buffers - containers for data.
 * [Java.nio FileSystem class](https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html) provides an interface to a file system.
+* [Java.nio IntBuffer class](https://docs.oracle.com/javase/9/docs/api/java/nio/IntBuffer.html) extends Buffer, an int buffer
 
 ## :camera: Screenshots
 
@@ -37,10 +38,36 @@
 
 ## :computer: Code Examples
 
-* tba
+* class to create a data file and write data to it. flip() method used to flip the buffer so buffer trimmed to current position then position changed to zero.
 
 ```java
-// tba
+public class Main {
+
+  public static void main(String[] args) {
+    try(FileOutputStream binFile = new FileOutputStream("data.dat");
+        FileChannel binChannel = binFile.getChannel()) {
+
+      byte[] outputBytes = "Hello World".getBytes();
+      ByteBuffer buffer = ByteBuffer.wrap(outputBytes);
+      int numBytes = binChannel.write(buffer);
+      System.out.println("numBytes written was: " + numBytes);
+
+      ByteBuffer intBuffer = ByteBuffer.allocate(Integer.BYTES);
+      intBuffer.putInt(245);
+      intBuffer.flip();
+      numBytes = binChannel.write(intBuffer);
+      System.out.println("numBytes written was: " + numBytes);
+
+      intBuffer.flip();
+      intBuffer.putInt(-98765);
+      intBuffer.flip();
+      numBytes = binChannel.write(intBuffer);
+      System.out.println("numBytes written was: " + numBytes);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+  }
+}
 ```
 
 ## :cool: Features
@@ -49,13 +76,12 @@
 
 ## :clipboard: Status & To-Do List
 
-* Status: Working basic game app.
+* Status: Working tutorial code Section 14-247 completed.
 * To-Do: Complete tutorial
 
 ## :clap: Inspiration
 
 * [Udemy: Java Programming Masterclass for Software Developers](https://www.udemy.com/course/java-the-complete-java-developer-course/learn/lecture/3561816#overview)
-* [JavaTpoint: Working of HashMap in Java](https://www.javatpoint.com/working-of-hashmap-in-java)
 
 ## :envelope: Contact
 
