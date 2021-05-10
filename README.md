@@ -23,6 +23,7 @@
 * [Java.nio](https://docs.oracle.com/javase/8/docs/api/java/nio/package-summary.html) used to define buffers - containers for data.
 * [Java.nio FileSystem class](https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html) provides an interface to a file system.
 * [Java.nio IntBuffer class](https://docs.oracle.com/javase/9/docs/api/java/nio/IntBuffer.html) extends Buffer, an int buffer
+* [Java.nio flip()](https://www.geeksforgeeks.org/buffer-flip-methods-in-java-with-examples/) to flip buffer. Use after read and before write operations
 
 ## :camera: Screenshots
 
