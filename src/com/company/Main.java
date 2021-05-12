@@ -1,27 +1,61 @@
 package com.company;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.channels.Pipe;
 
 public class Main {
 
     public static void main(String[] args) {
-        try(FileOutputStream binFile = new FileOutputStream("data.dat");
-            FileChannel binChannel = binFile.getChannel()) {
 
-            ByteBuffer buffer = ByteBuffer.allocate(100);
-            byte[] outputBytes = "Hello World".getBytes();
-            buffer.put(outputBytes);
-            buffer.putInt(245);
-            buffer.putInt(-98765);
-            byte[] outputBytes2 = "Another string".getBytes();
-            buffer.put(outputBytes2);
-            buffer.putInt(1000);
-            buffer.flip();
-            binChannel.write(buffer);
+        try {
+            Pipe pipe = Pipe.open();
 
+            // lambda expression used
+            Runnable writer = () -> {
+                try {
+                    Pipe.SinkChannel sinkChannel = pipe.sink();
+                    ByteBuffer buffer = ByteBuffer.allocate(56);
+
+                    for(int i=0; i<10; i++) {
+                        String currentTime = "The time is: " + System.currentTimeMillis();
+
+                        buffer.put(currentTime.getBytes());
+                        buffer.flip();
+
+                        while(buffer.hasRemaining()) {
+                            sinkChannel.write(buffer);
+                        }
+                        buffer.flip();
+                        Thread.sleep(100);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            };
+
+            // lambda expression used
+            Runnable reader = () -> {
+                try {
+                    Pipe.SourceChannel sourceChannel = pipe.source();
+                    ByteBuffer buffer = ByteBuffer.allocate(56);
+
+                    for(int i=0; i<10; i++) {
+                        int bytesRead = sourceChannel.read(buffer);
+                        byte[] timeString = new byte[bytesRead];
+                        buffer.flip();
+                        buffer.get(timeString);
+                        System.out.println("Reader Thread: " + new String(timeString));
+                        buffer.flip();
+                        Thread.sleep(100);
+                    }
+
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            new Thread(writer).start();
+            new Thread(reader).start();
         } catch(IOException e) {
             e.printStackTrace();
         }
